@@ -385,7 +385,9 @@ Cette fonction prend en paramètres la structure de configuration, l'angle de ro
 
 La fonction construit un tableau avec les données à transmettre comprenant l'angle et le sens de rotation en suivant les indications de la documentation du module. La trame peut ensuite être envoyée avec une des fonctions HAL.
   
-__3. Commande du moteur pas à pas en fonction du capteur de température__
+## TP5 - Intégration
+
+### Commande du moteur pas à pas en fonction du capteur de température
 
 Dans la boucle infinie du programme nous avons écrit un petit bout de programme permettant de piloter le moteur en fonction des variations de la température mesurée. 
 
