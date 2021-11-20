@@ -7,6 +7,7 @@
 - [TP2 - Interfaçage STM32 - Raspberry](#tp2---interfaçage-stm32---raspberry)
 - [TP3 - Interface REST](#tp3---interface-rest)
 - [TP4 - Bus CAN](#tp4---bus-can)
+- [TP5 - Intégration](#tp5---intégration)
 - [Conclusion](#conclusion)
 
 ## Introduction
