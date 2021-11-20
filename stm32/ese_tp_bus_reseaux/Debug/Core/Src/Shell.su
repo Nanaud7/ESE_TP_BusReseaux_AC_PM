@@ -1,0 +1,3 @@
+SHELL.c:33:9:Shell_Init	16	static
+SHELL.c:50:9:Shell_CharReceived	16	static
+SHELL.c:77:9:Shell_FetchExecute	56	static

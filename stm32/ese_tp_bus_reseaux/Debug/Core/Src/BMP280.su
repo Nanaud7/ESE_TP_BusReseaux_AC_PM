@@ -1,0 +1,7 @@
+BMP280.c:11:9:BMP280_GetID	24	static
+BMP280.c:25:9:BMP280_SetConfig	24	static
+BMP280.c:42:9:BMP280_GetCalibration	32	static
+BMP280.c:59:7:BMP280_GetTemperature	32	static
+BMP280.c:85:10:BMP280_CompensateT	40	static
+BMP280.c:103:7:BMP280_GetPressure	48	static
+BMP280.c:129:10:BMP280_CompensateP	184	static

@@ -1,0 +1,5 @@
+STEPPER.c:16:9:Stepper_Init	16	static
+STEPPER.c:33:9:Stepper_SetK	16	static
+STEPPER.c:42:7:Stepper_GetK	16	static
+STEPPER.c:50:7:Stepper_GetA	16	static
+STEPPER.c:60:9:Stepper_SetAngle	48	static
