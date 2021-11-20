@@ -29,7 +29,8 @@ Il ne faut pas oublier d'ajouter un fil de masse entre la carte NUCLEO et la Ras
 
 ### Broches utilisées par le Raspberry Pi:<br/>
 
->>> Pierre-Loïc
+<img src="https://zupimages.net/up/21/46/aj6k.png width="75%" height="75%">
+Les broches utilisées sont les GPIOs 14 et 15. Elles correspondent à l'UART0.
 
 ## TP1 - Bus I2C
 
@@ -305,7 +306,36 @@ La bibliothèque pourrait être améliorée en ajoutant les variables du shell (
  
 ### UART avec Python sur Raspberry Pi
 
->>> Pierre-Loïc
+Pour communiquer en UART depuis la Raspberry Pi, nous avons utilisé la bibliothèque Python serial. Le baud rate de cette liason série doit être le même de celui de la STM32, nous avons choisi de communiquer en 115 200 baud. <br/>
+
+Ensuite nous implémentons le protocole ci-dessous pour communiquer avec le STM32 :
+
+<img src="https://zupimages.net/up/21/46/k3am.png width="75%" height="75%">
+
+ ```c
+import serial
+
+ser = serial.Serial('/dev/ttyAMA0',115200)
+
+input = input()
+
+if input == 'GET_T':
+        ser.write(b"GET_T\r")
+if input == 'GET_P':
+        ser.write(b'GET_P')
+if input == 'SET_K':
+        val = input()
+        ser.write(b'SET_K='+val)
+if input == 'GET_K':
+        ser.write(b'GET_K')
+if input == 'GET_A':
+        ser.write(b'GET_A')
+
+r = ser.read(50)
+  ```
+On avons testé les différentes commandes :
+
+<img src="https://zupimages.net/up/21/46/wjh9.png width="75%" height="75%">
 
 ## TP3 - Interface REST
 
