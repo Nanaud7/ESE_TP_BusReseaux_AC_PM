@@ -20,6 +20,11 @@ Le TP de bus et réseaux nous a permis de mettre en pratique ce que l'on a vu da
 
 <img src="https://zupimages.net/up/21/46/owm7.png" width="90%" height="90%">
 
+## Broches utilisées pour ce TP
+
+### Broches utilisées par la NUCLEO-L476RG:<br/>
+<img src="https://zupimages.net/up/21/46/7cju.png" width="75%" height="75%">
+
 ## TP1 - Bus I2C
 
 Cette première partie est consacrée à l'interfaçage d'un STM32 avec un capteur de pression/température et un accéléromètre. Ces deux composants partagent le même bus I2C et le STM32 joue le rôle de Master du bus. Pour cette partie le code a été développé en langage C en utilisant la bibliothèque HAL.<br/>
