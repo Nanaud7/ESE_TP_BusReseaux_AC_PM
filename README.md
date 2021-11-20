@@ -24,12 +24,15 @@ Le TP de bus et réseaux nous a permis de mettre en pratique ce que l'on a vu da
 ## Broches utilisées pour ce TP
 
 ### Broches utilisées par la NUCLEO-L476RG:<br/>
+
 <img src="https://zupimages.net/up/21/46/7cju.png" width="75%" height="75%">
+
 Il ne faut pas oublier d'ajouter un fil de masse entre la carte NUCLEO et la Raspberry Pi.
 
 ### Broches utilisées par le Raspberry Pi:<br/>
 
-<img src="https://zupimages.net/up/21/46/aj6k.png width="75%" height="75%">
+<img src="https://zupimages.net/up/21/46/aj6k.png" width="75%" height="75%">
+
 Les broches utilisées sont les GPIOs 14 et 15. Elles correspondent à l'UART0.
 
 ## TP1 - Bus I2C
@@ -310,7 +313,7 @@ Pour communiquer en UART depuis la Raspberry Pi, nous avons utilisé la biblioth
 
 Ensuite nous implémentons le protocole ci-dessous pour communiquer avec le STM32 :
 
-<img src="https://zupimages.net/up/21/46/k3am.png width="75%" height="75%">
+<img src="https://zupimages.net/up/21/46/k3am.png" width="75%" height="75%">
 
  ```c
 import serial
@@ -335,7 +338,7 @@ r = ser.read(50)
   ```
 On avons testé les différentes commandes :
 
-<img src="https://zupimages.net/up/21/46/wjh9.png width="75%" height="75%">
+<img src="https://zupimages.net/up/21/46/wjh9.png" width="75%" height="75%">
 
 ## TP3 - Interface REST
 
