@@ -295,8 +295,117 @@ La bibliothèque pourrait être améliorée en ajoutant les variables du shell (
 
 ## TP4 - Bus CAN
 
->>> Arnaud
+Le STM32L476 utilisé pour ces TP, intègre un contrôleur CAN. Pour transmettre sur un bus CAN il faut aussi utiliser un Tranceiver CAN qui est ici un TJA1050 monté sur un shield au format Arduino. L'objectif est ici de piloter un module moteur pas à pas par le bus CAN.<br/>
+
+Nous avons ajouté à la configuration de notre projet STM32CubeIDE le périphérique CAN1 avec une vitesse de 500kbit/s comme conseillé dans le sujet  __(RX sur PB8 et TX sur PB9)__.<br/>
+
+Nous avons créé une nouvelle bibliothèque pour le contrôle du moteur pas à pas. Cette dernière est composée de deux fichiers : STEPPER.c et STEPPER.h
+
+__1. Initialisation de la structure de configuration__
+
+Comme pour le shell présenté plus haut, nous avons défini notre propre structure de configuration qui prend la forme suivante :
+
+ ```c
+ // Structure
+typedef struct Stepper_Struct{
+	CAN_HandleTypeDef* hcan;
+	float K; // Coefficient K
+	float A; // Angle
+} Stepper_Struct;
+  ```
+
+Cette structure contient la référence du contrôleur CAN du SMT32, le coefficient K de la commande du moteur et l'angle A étant l'angle courant.
+
+ ```c
+/*	@brief	Initialisation de la structure
+ *  @param	Stepper_Struct Structure de configuration du stepper à initialiser
+ *	@retval	0
+ */
+uint8_t Stepper_Init(Stepper_Struct* Stepper, CAN_HandleTypeDef* hcan) {
+	Stepper->hcan = hcan;
+	Stepper->K = 100;
+	Stepper->A = 0;
+
+	// Activation du contrôleur CAN
+	if(HAL_OK != HAL_CAN_Start(Stepper->hcan)){
+		while(1);
+	}
+	return 0;
+}
+  ```
+  
+La fonction Stepper_Init() initialise la structure et active le contrôleur CAN.
+  
+__2. Transmettre un ordre de rotation en angle__
+
+Afin de transmettre un ordre de rotation, nous avons créé la fonction Stepper_SetAngle() que voici :
+
+ ```c
+/*	@brief	Envoyer un ordre de rotation en angle au moteur pas à pas
+ *  @param	Structure Stepper_Struct
+ *  @param	angle Angle à réaliser
+ *  @param	sign Sens de rotation
+ *	@retval 0
+ */
+uint8_t Stepper_SetAngle(Stepper_Struct* Stepper, uint8_t angle, uint8_t sign) {
+	// Initialisation de la structure du header
+	CAN_TxHeaderTypeDef CanHeader;
+	CanHeader.StdId = 0x61;						// Angle (0x61)
+	CanHeader.ExtId = 0;						// Pas utilisé ici
+	CanHeader.IDE = CAN_ID_STD;					// Trame standard
+	CanHeader.RTR = CAN_RTR_DATA;				// Trame contenant des données
+	CanHeader.DLC = 2;							// Trame contenant 2 octets
+	CanHeader.TransmitGlobalTime = DISABLE;		// Pas de mesure du temps de réponse
+
+	// Données à transmettre
+	uint8_t trameCAN[2] = {angle,sign};
+
+	// Envoi de le trame
+	if(HAL_OK != HAL_CAN_AddTxMessage(&hcan1, &CanHeader, trameCAN, TxMailbox)){
+		return 1;
+	}
+
+	return 0;
+}
+  ```
+  
+Cette fonction prend en paramètres la structure de configuration, l'angle de rotation et le sens de rotation. La fonction commence par créer l'en-tête de la trame avec les éléments suivants :
+- StdId : Message ID dans le mode standard. Ici 0x61 pour la commande en angle (cf. documentation du module moteur pas à pas).
+- ExtId : Message ID dans le mode étendu. Ici à 0 puisque nous utilisons le mode standard.
+- IDE : Mode utilisé. Ici à CAN_ID_STD pour indiquer que nous utilisons le mode standard.
+- RTR : Type utilisé. Ici à CAN_RTR_DATA puisque nous souhaitons transmettre des données en plus du message ID.
+- DLC : Taille des données à transmettre. Ici à 2 pour transmettre deux octets.
+- TransmitGlobal : Mesure de temps de réponse du bus CAN. Ici à DISABLE puisque nous ne l'utilisons pas.
+
+La fonction construit un tableau avec les données à transmettre comprenant l'angle et le sens de rotation en suivant les indications de la documentation du module. La trame peut ensuite être envoyée avec une des fonctions HAL.
+  
+__3. Commande du moteur pas à pas en fonction du capteur de température__
+
+Dans la boucle infinie du programme nous avons écrit un petit bout de programme permettant de piloter le moteur en fonction des variations de la température mesurée. 
+
+```c
+uint8_t angle = 0, sign = 0;
+float previousTemp = 0;
+
+while (1)
+{
+	// Pilotage du moteur en fonction de la température
+	float temp = BMP280_GetTemperature();
+	angle = (temp - previousTemp) * Stepper.K; 	// Multiplication par le coefficient K
+	previousTemp = temp;
+
+	if(angle >= 0) 	sign = 0;
+	else{
+		sign = 1;
+		angle*=-1;
+	}
+	Stepper_SetAngle(&Stepper, angle, sign);
+	
+	HAL_Delay(1000);
+}
+```
+
+La commande en angle est calculée à partir de la multiplication du coefficient K avec la différence entre la nouvelle température mesurée et la température de la précédente exécution. Le sens de rotation est ensuite défini en fonction du résultat précédent et l'ordre est envoyé avec la fonction Stepper_SetAngle() vu au-dessus.
 
 ## Conclusion
 
->>> Arnaud
