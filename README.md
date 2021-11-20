@@ -432,7 +432,8 @@ La commande en angle est calculée à partir de la multiplication du coefficient
 L'objectif principal du TP a été rempli puisque nous avons mis en pratique les enseignements vus en cours.<br/>
 
 Lors de ce TP nous avons réussi à:
-- récupérer les données de température et pression sur le Raspberry Pi par l'intermédiaire de notre shell,
+- récupérer les données de température et pression du capteur BMP280,
+- récupérer les données sur le Raspberry Pi par l'intermédiaire de notre shell,
 - piloter le module moteur pas à pas avec le bus CAN.
 
 >>> Pierre-Loïc
