@@ -25,6 +25,9 @@ Le TP de bus et réseaux nous a permis de mettre en pratique ce que l'on a vu da
 
 ### Broches utilisées par la NUCLEO-L476RG:<br/>
 <img src="https://zupimages.net/up/21/46/7cju.png" width="75%" height="75%">
+Il ne faut pas oublier d'ajouter un fil de masse entre la carte NUCLEO et la Raspberry Pi.
+
+### Broches utilisées par le Raspberry Pi:<br/>
 
 ## TP1 - Bus I2C
 
