@@ -18,6 +18,12 @@ Le TP de bus et réseaux nous a permis de mettre en pratique ce que l'on a vu da
 Cette première partie est consacrée à l'interfaçage d'un STM32 avec un capteur de pression/température et un accéléromètre. Ces deux composants partagent le même bus I2C et le STM32 joue le rôle de Master du bus. Pour cette partie le code a été développé en langage C en utilisant la bibliothèque HAL.<br/>
 Lors du TP, nous avons uniquement développé une bibliothèque pour le capteur de pression/température BMP280 par manque de temps.
 
+Notre projet STM32CubeIDE utilise pour le TP1 la configuration suivante :
+- Fréquence d'horloge de 80MHz qui est la fréquence maximum de notre microcontrôleur,
+- Génération des fichiers d'initialisation des périphériques active,
+- Périphérique I2C3 activé avec la configuration par défaut à 100kHz (les capteurs permettent aussi le 400kHz) __(SCL sur PC0 et SDA sur PC1)__,
+- Périphérique UART2 activé à 115200 Bits/s avec interruption (pour avoir un retour d'informations).
+
 ### Bibliothèque pour le BMP280 :
 
 Cette bibliothèque est composée de deux fichiers : BMP280.c et BMP280.h
@@ -148,15 +154,149 @@ La fonction permettant d'obtenir la pression fonctionne de la même manière, il
 
 ## TP2 - Interfaçage STM32 - Raspberry
 
-=> Arnaud
-=> PL
+Cette seconde partie du TP consiste à mettre en place une liaison série entre le SMT32 et le Raspberry Pi. Nous avons développé un shell sur le STM32 fonctionnant avec cette liaison série. Ci-dessous nous présenterons les codes développés pour ces deux émetteurs/récepteurs.
+
+### Shell sur STM32
+
+Nous avons ajouté à la configuration de notre projet STM32CubeIDE le périphérique UART3 à 115200 Bit/s avec interruption __(RX sur PC11 et TX sur PC10)__.</br>
+Cette bibliothèque est composée de deux fichiers : SHELL.c et SHELL.h
+
+__1. Initialisation de la structure de configuration__
+
+La structure de configuration de notre shell prend la forme suivante :
+
+ ```c
+ // Structure
+typedef struct Shell_Struct{
+	UART_HandleTypeDef* huart;
+} Shell_Struct;
+  ```
+
+Cette structure est très simple puisqu'elle prend uniquement la référence du périphérique UART l'utilisant. Une première structure de configuration a été créé dans le fichier source SHELL.c et mise en *extern* dans le fichier d'en-tête.
+
+ ```c
+/*	@brief	Initialisation de notre shell
+ * 	@param	Shell_Struct Structure contenant les paramètres de notre shell à initialiser
+ * 	@param	UART_Handle UART utilisé par le shell
+ *	@retval 0
+ */
+uint8_t Shell_Init(Shell_Struct* Shell, UART_HandleTypeDef* huart){
+	Shell->huart = huart;
+
+	// Démarrage de l'interruption sur l'UART
+	HAL_UART_Receive_IT(Shell->huart, (uint8_t*)&charReceived, 1);
+
+	// Transmission du prompt de notre shell
+	HAL_UART_Transmit(Shell->huart, (uint8_t*)shellPrompt, sizeof(shellPrompt), HAL_MAX_DELAY);
+
+	return 0;
+}
+  ```
+
+Cette fonction Shell_Init(), appelée dans le *main* , permet d'initialiser la structure avec la référence à l'UART, d'initialiser l'interruption de cet UART et d'afficher le prompt de notre shell.
+
+ ```
+ <CHOBERT-MIRIO>
+  ```
+
+__2. Réception d'un caractère et traitement de la chaîne__
+
+Lorsqu'un caractère arrive sur le port série une interruption se déclenche et dirige l'exécution du programme vers l'adresse pointée par le vecteur d'interruption. On utilise une fonction *Callback* pour ajouter le traitement de cette interruption à notre fichier main.c.
+
+ ```c
+ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart){
+
+	if(huart->Instance == USART3){
+		Shell_CharReceived(&Shell, charReceived);
+		HAL_UART_Receive_IT(&huart3, (uint8_t*)&charReceived, 1);
+
+		// Visualisation de la trame provenant de la Raspberry
+		HAL_UART_Transmit(&huart2, (uint8_t*)&charReceived, 1, HAL_MAX_DELAY);
+	}
+}
+  ```
+
+Le caractère reçu est ajouté à la chaîne de caractère en cours et l'interruption est relancée. On transmet aussi ce qui a été reçu sur la liaison série du PC (*UART2*) pour vérifier la transmission.
+
+ ```c
+/*	@brief	Traitement du dernier caractère reçu
+ * 	@param	Shell_Struct Structure contenant les paramètres de notre shell
+ * 	@param	charReceived Caractère à traiter
+ *	@retval 0
+ */
+uint8_t Shell_CharReceived(Shell_Struct* Shell, char charReceived){
+	// Vérification fin de chaîne
+	if(charReceived !='\r' && indexSh<32){
+		// Transmission du caractère reçu
+		HAL_UART_Transmit(Shell->huart, (uint8_t*)&charReceived, 1, HAL_MAX_DELAY);
+		// Ajout du caractère dans la chaîne
+		charArray[indexSh] = charReceived;
+		indexSh++;
+	}
+	else{
+		// Recherche et exécution de la commabde reçue
+		Shell_FetchExecute(Shell, charArray);
+		// Réinitialisation de la chaîne de caractères
+		memset(charArray, 0, sizeof (charArray));
+		indexSh=0;
+		// Transmission du prompt de notre shell
+		HAL_UART_Transmit(Shell->huart, (uint8_t*)shellPrompt, sizeof(shellPrompt), HAL_MAX_DELAY);
+	}
+
+	return 0;
+}
+ ```
+  
+Chaque caractère reçu est ajouté à la chaîne de caractères et retransmis pour l'afficher sur la console de l'utilisateur. Lorsque le caractère est un retour chariot ou que la chaîne de caractères est pleine, la commande est recherchée parmi celles configurées et la fonction correspondante est exécutée.
+
+ ```c
+/*	@brief	Recherche et exécution de la commande
+ * 	@param	Shell_Struct Structure de configuration du shell
+ * 	@param	cmd Chaîne de caractères contenant la commande de l'utilisateur
+ *	@retval 0
+ */
+uint8_t Shell_FetchExecute(Shell_Struct* Shell, char* cmd){
+
+	// Recherche de la commande parmi celles configurées
+	uint8_t cmdSelected = -1;
+	for (uint8_t j = 0; ShellCmd[j]; j++){
+		if(!strcmp(cmd, ShellCmd[j])) cmdSelected = j;
+	}
+
+	char buffer[32] = ""; // Buffer utilisé par toutes les commandes ci-dessous
+	switch(cmdSelected){
+	case 0:
+		// GET_T
+		sprintf(buffer, "\r\nT=+%.2f_C\r\n",(float)BMP280_GetTemperature());
+		HAL_UART_Transmit(Shell->huart,(uint8_t*)buffer, sizeof(buffer), HAL_MAX_DELAY);
+		break;
+		
+	...
+
+	default:
+		HAL_UART_Transmit(Shell->huart,(uint8_t*)cmdNotRecognized, sizeof(cmdNotRecognized), HAL_MAX_DELAY);
+		break;
+	}
+
+	return 0;
+}
+ ```
+
+La fonction ci-dessus compare la chaîne reçue avec celles ajoutées dans un tableau de chaînes de caractères. Elle obtient un indice de ce tableau si une commande a été reconnu. Grâce à un *switch()* on peut sélectionner la fonction à exécuter ou transmettre un message d'erreur dans le cas ou la commande n'est pas reconnue.</br></br>
+La bibliothèque pourrait être améliorée en ajoutant les variables du shell (la chaîne de caractères par exemple) dans la structure de configuration. Cela permettrait de rendre la bibliothèque totalement indépendante et d'être utilisable par plusieurs liaisons séries en simultané.
+ 
+### UART avec Python sur Raspberry Pi
+
+>>> Pierre-Loïc
 
 ## TP3 - Interface REST
 
-=> PL
+>>> Pierre-Loïc
 
 ## TP4 - Bus CAN
 
-=> Arnaud
+>>> Arnaud
 
 ## Conclusion
+
+>>> Arnaud
