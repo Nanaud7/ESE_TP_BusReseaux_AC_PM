@@ -399,7 +399,7 @@ La fonction construit un tableau avec les données à transmettre comprenant l'a
   
 ## TP5 - Intégration
 
-### Commande du moteur pas à pas en fonction du capteur de température
+### Commande du moteur pas à pas en fonction du capteur de température avec le STM32
 
 Dans la boucle infinie du programme nous avons écrit un petit bout de programme permettant de piloter le moteur en fonction des variations de la température mesurée. 
 
