@@ -34,10 +34,10 @@ Il ne faut pas oublier d'ajouter un fil de masse entre la carte NUCLEO et la Ras
 ## TP1 - Bus I2C
 
 Cette première partie est consacrée à l'interfaçage d'un STM32 avec un capteur de pression/température et un accéléromètre. Ces deux composants partagent le même bus I2C et le STM32 joue le rôle de Master du bus. Pour cette partie le code a été développé en langage C en utilisant la bibliothèque HAL.<br/>
-Lors du TP, nous avons uniquement développé une bibliothèque pour le capteur de pression/température BMP280 par manque de temps.
+Lors du TP, nous avons uniquement développé une bibliothèque pour le capteur de pression/température BMP280.
 
 Notre projet STM32CubeIDE utilise pour le TP1 la configuration suivante :
-- Fréquence d'horloge de 80MHz qui est la fréquence maximum de notre microcontrôleur,
+- Fréquence d'horloge de 80MHz qui est la fréquence maximale de notre microcontrôleur,
 - Génération des fichiers d'initialisation des périphériques active,
 - Périphérique I2C3 activé avec la configuration par défaut à 100kHz (les capteurs permettent aussi le 400kHz) __(SCL sur PC0 et SDA sur PC1)__,
 - Périphérique UART2 activé à 115200 Bits/s avec interruption (pour avoir un retour d'informations).
