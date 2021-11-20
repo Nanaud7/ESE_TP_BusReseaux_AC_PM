@@ -1,7 +1,13 @@
-# ESE_TP_BusReseaux_AC_PM
+# TP Bus et réseaux - Pierre-Loïc MIRIO et Arnaud CHOBERT
 
-Pierre-Loïc MIRIO et Arnaud CHOBERT<br/>
-ESE 2021-2022
+## Table des matières
+
+- [Introduction](#introduction)
+- [TP1 - Bus I2C](#tp1---bus-i2c)
+- [TP2 - Interfaçage STM32 - Raspberry](#tp2---interfaçage-stm32---raspberry)
+- [TP3 - Interface REST](#tp3---interface-rest)
+- [TP4 - Bus CAN](#tp4---bus-can)
+- [Conclusion](#conclusion)
 
 ## Introduction
 
