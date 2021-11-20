@@ -313,7 +313,7 @@ Pour communiquer en UART depuis la Raspberry Pi, nous avons utilisé la biblioth
 
 Ensuite nous implémentons le protocole ci-dessous pour communiquer avec le STM32 :
 
-<img src="https://zupimages.net/up/21/46/k3am.png" width="75%" height="75%">
+<img src="https://zupimages.net/up/21/46/k3am.png" width="50%" height="50%">
 
  ```c
 import serial
@@ -338,7 +338,7 @@ r = ser.read(50)
   ```
 On avons testé les différentes commandes :
 
-<img src="https://zupimages.net/up/21/46/wjh9.png" width="75%" height="75%">
+<img src="https://zupimages.net/up/21/46/wjh9.png" width="25%" height="25%">
 
 ## TP3 - Interface REST
 
