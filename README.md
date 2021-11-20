@@ -29,6 +29,8 @@ Il ne faut pas oublier d'ajouter un fil de masse entre la carte NUCLEO et la Ras
 
 ### Broches utilisées par le Raspberry Pi:<br/>
 
+>>> Pierre-Loïc
+
 ## TP1 - Bus I2C
 
 Cette première partie est consacrée à l'interfaçage d'un STM32 avec un capteur de pression/température et un accéléromètre. Ces deux composants partagent le même bus I2C et le STM32 joue le rôle de Master du bus. Pour cette partie le code a été développé en langage C en utilisant la bibliothèque HAL.<br/>
@@ -432,3 +434,5 @@ L'objectif principal du TP a été rempli puisque nous avons mis en pratique les
 Lors de ce TP nous avons réussi à:
 - récupérer les données de température et pression sur le Raspberry Pi par l'intermédiaire de notre shell,
 - piloter le module moteur pas à pas avec le bus CAN.
+
+>>> Pierre-Loïc
