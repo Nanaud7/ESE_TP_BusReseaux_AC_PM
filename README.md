@@ -3,7 +3,7 @@
 ## Table des matières
 
 - [Introduction](#introduction)
-- [Borches utilisées](#broches-utilisées-pour-ce-tp)
+- [Broches utilisées](#broches-utilisées-pour-ce-tp)
 - [TP1 - Bus I2C](#tp1---bus-i2c)
 - [TP2 - Interfaçage STM32 - Raspberry](#tp2---interfaçage-stm32---raspberry)
 - [TP3 - Interface REST](#tp3---interface-rest)
