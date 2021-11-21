@@ -532,7 +532,7 @@ while (1)
 
 La commande en angle est calculée à partir de la multiplication du coefficient K avec la différence entre la nouvelle température mesurée et la température de la précédente exécution. Le sens de rotation est ensuite défini en fonction du résultat précédent et l'ordre est envoyé avec la fonction Stepper_SetAngle() vu au-dessus.
 
-###API REST
+### API REST
 
 Nous avons implémenté l'API suivante :
 
