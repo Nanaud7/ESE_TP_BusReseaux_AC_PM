@@ -546,23 +546,23 @@ temp = [0,0,32,0]
 
 Avec la commande curl, nous avons testé les différentes methodes HTTP :
 
--GET
+- GET
 
-<img src="https://zupimages.net/up/21/46/q4m5.png" width="50%" height="50%">
+<img src="https://zupimages.net/up/21/46/q4m5.png" width="75%" height="75%">
 
-<img src="https://zupimages.net/up/21/46/qcl6.png" width="50%" height="50%">
+<img src="https://zupimages.net/up/21/46/qcl6.png" width="75%" height="75%">
 
--DELETE
+- DELETE
 
-<img src="https://zupimages.net/up/21/46/rb51.png.png" width="50%" height="50%">
+<img src="https://zupimages.net/up/21/46/rb51.png" width="75%" height="75%">
 
-<img src="https://zupimages.net/up/21/46/vimq.png" width="50%" height="50%">
+<img src="https://zupimages.net/up/21/46/vimq.png" width="75%" height="75%">
 
--POST
+- POST
 
-<img src="https://zupimages.net/up/21/46/gsqo.png" width="50%" height="50%">
+<img src="https://zupimages.net/up/21/46/gsqo.png" width="75%" height="75%">
 
-<img src="https://zupimages.net/up/21/46/frkm.png" width="50%" height="50%">
+<img src="https://zupimages.net/up/21/46/frkm.png" width="75%" height="75%">
 
 ## Conclusion
 
@@ -571,6 +571,5 @@ L'objectif principal du TP a été rempli puisque nous avons mis en pratique les
 Lors de ce TP nous avons réussi à:
 - récupérer les données de température et pression du capteur BMP280,
 - récupérer les données sur le Raspberry Pi par l'intermédiaire de notre shell,
-- piloter le module moteur pas à pas avec le bus CAN.
-
->>> Pierre-Loïc
+- piloter le module moteur pas à pas avec le bus CAN,
+- créer une API RESTful pour stocker les valeurs.
