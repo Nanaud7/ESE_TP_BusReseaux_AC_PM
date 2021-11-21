@@ -532,6 +532,38 @@ while (1)
 
 La commande en angle est calculée à partir de la multiplication du coefficient K avec la différence entre la nouvelle température mesurée et la température de la précédente exécution. Le sens de rotation est ensuite défini en fonction du résultat précédent et l'ordre est envoyé avec la fonction Stepper_SetAngle() vu au-dessus.
 
+###API REST
+
+Nous avons implémenté l'API suivante :
+
+<img src="https://zupimages.net/up/21/46/pae5.png" width="50%" height="50%">
+
+Nous l'avons testé avec le tableau de valeurs suivant :
+
+```c
+temp = [0,0,32,0]
+```
+
+Avec la commande curl, nous avons testé les différentes methodes HTTP :
+
+-GET
+
+<img src="https://zupimages.net/up/21/46/q4m5.png" width="50%" height="50%">
+
+<img src="https://zupimages.net/up/21/46/qcl6.png" width="50%" height="50%">
+
+-DELETE
+
+<img src="https://zupimages.net/up/21/46/rb51.png.png" width="50%" height="50%">
+
+<img src="https://zupimages.net/up/21/46/vimq.png" width="50%" height="50%">
+
+-POST
+
+<img src="https://zupimages.net/up/21/46/gsqo.png" width="50%" height="50%">
+
+<img src="https://zupimages.net/up/21/46/frkm.png" width="50%" height="50%">
+
 ## Conclusion
 
 L'objectif principal du TP a été rempli puisque nous avons mis en pratique les enseignements vus en cours.<br/>
