@@ -386,7 +386,33 @@ Nous avons obtenu :
 "data": {"name": "Alice", "age":3}
   ```
 
+### API CRUD
 
+Nous avons implémenté l'API CRUD suivante :
+
+<img src="https://zupimages.net/up/21/46/jlf1.png" width="25%" height="25%">
+
+Nous avons testé l'API en envoyant des requêtes via la commande curl :
+
+ ```c
+curl -X PUT -H 'Content-Type: application/json' http://192.168.88.214:5000/api/welcome/2 -d '"word"'
+  ```
+
+Cette commande ajoute le mot word à la troisième position :
+
+ ```c
+wewordlcome
+  ```
+
+ ```c
+ curl -X PATCH -H 'Content-Type: application/json' http://192.168.88.214:5000/api/welcome/2 -d '"w"'
+  ```
+
+Cette commade remplace la troisième lettre par un w :
+
+ ```c
+wewcome
+  ```
 
 ## TP4 - Bus CAN
 
