@@ -315,6 +315,7 @@ Ensuite nous implémentons le protocole ci-dessous pour communiquer avec le STM3
 
 <img src="https://zupimages.net/up/21/46/k3am.png" width="50%" height="50%">
 
+
  ```c
 import serial
 
@@ -336,13 +337,56 @@ if input == 'GET_A':
 
 r = ser.read(50)
   ```
-On avons testé les différentes commandes :
+Nous avons testé les différentes commandes :
 
 <img src="https://zupimages.net/up/21/46/wjh9.png" width="25%" height="25%">
 
 ## TP3 - Interface REST
 
->>> Pierre-Loïc
+Sur la Raspberry Pi 0, nous avons créé notre serveur web en important la bibliothèque Python flask.
+
+Notre serveur doit être RESTful :
+- réponse sous forme JSON
+- faire la différence des méthodes HTTP
+
+Il doit aussi savoir traiter les URL fausses en renvoyant une erreur 404.
+
+### Méthode POST
+
+ ```c
+@app.route('/api/request/', methods=['GET', 'POST'])
+@app.route('/api/request/<path>', methods=['GET','POST'])
+def api_request(path=None):
+    resp = {
+            "method":   request.method,
+            "url" :  request.url,
+            "path" : path,
+            "args": request.args,
+            "headers": dict(request.headers),
+    }
+    if request.method == 'POST':
+        resp["POST"] = {
+                "data" : request.get_json(),
+                }
+    return jsonify(resp)
+  ```
+
+On cherche à obtenir une réponse qui remplit les champs args et data.</br>
+
+Pour cela on utilise la commande suivante :
+
+
+ ```c
+curl -X POST -H 'Content-Type: application/json' http://192.168.88.214:5000/api/request/?name="Bob" -d '{"name": "Alice", "age":3}'
+  ```
+
+Nous avons obtenu :
+ ```c
+"args": "Bob"
+"data": {"name": "Alice", "age":3}
+  ```
+
+
 
 ## TP4 - Bus CAN
 
