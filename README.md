@@ -25,15 +25,13 @@ Le TP de bus et réseaux nous a permis de mettre en pratique ce que l'on a vu da
 
 ### Broches utilisées par la NUCLEO-L476RG:<br/>
 
-<img src="https://zupimages.net/up/21/46/7cju.png" width="75%" height="75%">
+<img src="https://zupimages.net/up/21/46/7cju.png" width="50%" height="50%">
 
 Il ne faut pas oublier d'ajouter un fil de masse entre la carte NUCLEO et la Raspberry Pi.
 
 ### Broches utilisées par le Raspberry Pi:<br/>
 
-<img src="https://zupimages.net/up/21/46/aj6k.png" width="75%" height="75%">
-
-Les broches utilisées sont les GPIOs 14 et 15. Elles correspondent à l'UART0.
+<img src="https://zupimages.net/up/21/46/xve5.png" width="50%" height="50%">
 
 ## TP1 - Bus I2C
 
@@ -309,14 +307,19 @@ La bibliothèque pourrait être améliorée en ajoutant les variables du shell (
  
 ### UART avec Python sur Raspberry Pi
 
-Pour communiquer en UART depuis la Raspberry Pi, nous avons utilisé la bibliothèque Python serial. Le baud rate de cette liason série doit être le même de celui de la STM32, nous avons choisi de communiquer en 115 200 baud. <br/>
+Pour communiquer en UART depuis la Raspberry Pi, nous avons utilisé la bibliothèque Python Serial. Le baud rate de cette liaison série doit être le même de celui de la STM32, nous avons choisi de communiquer en 115200 bauds. <br/>
 
 Ensuite nous implémentons le protocole ci-dessous pour communiquer avec le STM32 :
 
-<img src="https://zupimages.net/up/21/46/k3am.png" width="50%" height="50%">
+| __Requête du RPI__ | __Réponse du STM__ | __Commentaire__ |
+| --- | --- | --- |
+| GET_T | T=+12.50_C | Température compensée sur 10 caractères |
+| GET_P | P=102300Pa | Pression compensée sur 10 caractères |
+| SET_K=1234 | SET_K=OK | Fixe le coefficient K (en 1/100e) |
+| GET_K | K=12.34000 | Coefficient K sur 10 caractères |
+| GET_A | A=125.7000 | Angle sur 10 caractères |
 
-
- ```c
+ ```python
 import serial
 
 ser = serial.Serial('/dev/ttyAMA0',115200)
@@ -337,13 +340,13 @@ if input == 'GET_A':
 
 r = ser.read(50)
   ```
-Nous avons testé les différentes commandes :
+Nous avons testé les commandes suivantes :
 
 <img src="https://zupimages.net/up/21/46/wjh9.png" width="25%" height="25%">
 
 ## TP3 - Interface REST
 
-Sur la Raspberry Pi 0, nous avons créé notre serveur web en important la bibliothèque Python flask.
+Sur la Raspberry Pi 0, nous avons créé notre serveur web en important la bibliothèque Python Flask.
 
 Notre serveur doit être RESTful :
 - réponse sous forme JSON
@@ -353,7 +356,7 @@ Il doit aussi savoir traiter les URL fausses en renvoyant une erreur 404.
 
 ### Méthode POST
 
- ```c
+ ```python
 @app.route('/api/request/', methods=['GET', 'POST'])
 @app.route('/api/request/<path>', methods=['GET','POST'])
 def api_request(path=None):
@@ -375,13 +378,12 @@ On cherche à obtenir une réponse qui remplit les champs args et data.</br>
 
 Pour cela on utilise la commande suivante :
 
-
- ```c
+ ```
 curl -X POST -H 'Content-Type: application/json' http://192.168.88.214:5000/api/request/?name="Bob" -d '{"name": "Alice", "age":3}'
   ```
 
 Nous avons obtenu :
- ```c
+ ```json
 "args": "Bob"
 "data": {"name": "Alice", "age":3}
   ```
@@ -390,29 +392,37 @@ Nous avons obtenu :
 
 Nous avons implémenté l'API CRUD suivante :
 
-<img src="https://zupimages.net/up/21/46/jlf1.png" width="50%" height="50%">
+| __CRUD__ | __Method__ | __Path__ | __Action__ |
+| --- | --- | --- | --- |
+| Create | POST | welcome/ | Change sentence |
+| Retrieve | GET | welcome/ | Return sentence |
+| Retrieve | GET | welcome/x | Return letter x |
+| Update | PUT | welcome/x | Insert new word at position x |
+| Update | PATCH | welcome/x | Change letter at position x |
+| Delete | DELETE | welcome/x | Delete letter at position x |
+| Delete | DELETE | welcome/ | Delete sentence |
 
 Nous avons testé l'API en envoyant des requêtes via la commande curl :
 
- ```c
+ ```
 curl -X PUT -H 'Content-Type: application/json' http://192.168.88.214:5000/api/welcome/2 -d '"word"'
   ```
 
 Cette commande ajoute le mot word à la troisième position :
 
- ```c
+ ```
 wewordlcome
   ```
 
 </br>
 
- ```c
+ ```
  curl -X PATCH -H 'Content-Type: application/json' http://192.168.88.214:5000/api/welcome/2 -d '"w"'
   ```
 
-Cette commade remplace la troisième lettre par un w :
+Cette commande remplace la troisième lettre par un w :
 
- ```c
+ ```
 wewcome
   ```
 
@@ -536,15 +546,27 @@ La commande en angle est calculée à partir de la multiplication du coefficient
 
 Nous avons implémenté l'API suivante :
 
-<img src="https://zupimages.net/up/21/46/pae5.png" width="50%" height="50%">
+| __CRUD__ | __Method__ | __Path__ | __Action__ |
+| --- | --- | --- | --- |
+| Create | POST | temp/ | Retrieve new temperature |
+| Create | POST | pres/ | Retrieve new pressure |
+| Retrieve | GET | temp/ | Return all previous temperatures |
+| Retrieve | GET | temp/x | Return temperature #x |
+| Retrieve | GET | pres/ | Return all previous pressures |
+| Retrieve | GET | pres/x | Return pressure #x |
+| Retrieve | GET | scale/ | Return scale (K) |
+| Retrieve | GET | angle/ | Return angle (temp x scale) |
+| Update | POST | scale/x | Change scale (K) for x |
+| Delete | DELETE | temp/x | Delete temperature #x |
+| Delete | DELETE | pres/x | Delete pressure #x |
 
 Nous l'avons testé avec le tableau de valeurs suivant :
 
-```c
+```python
 temp = [0,0,32,0]
 ```
 
-Avec la commande curl, nous avons testé les différentes methodes HTTP :
+Avec la commande *curl*, nous avons testé différentes methodes HTTP :
 
 - GET
 
