@@ -390,7 +390,7 @@ Nous avons obtenu :
 
 Nous avons implémenté l'API CRUD suivante :
 
-<img src="https://zupimages.net/up/21/46/jlf1.png" width="25%" height="25%">
+<img src="https://zupimages.net/up/21/46/jlf1.png" width="50%" height="50%">
 
 Nous avons testé l'API en envoyant des requêtes via la commande curl :
 
@@ -403,6 +403,8 @@ Cette commande ajoute le mot word à la troisième position :
  ```c
 wewordlcome
   ```
+
+</br>
 
  ```c
  curl -X PATCH -H 'Content-Type: application/json' http://192.168.88.214:5000/api/welcome/2 -d '"w"'
